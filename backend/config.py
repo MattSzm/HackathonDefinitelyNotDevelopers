@@ -11,8 +11,9 @@ class Config:
 class DevelopmentConfig(Config):
    DEBUG = True
    SECRET_KEY = 'INSECURE_FOR_LOCAL_DEVELOPMENT'
-   CASSANDRA_KEYSPACE = 'hackaton'
+   CASSANDRA_KEYSPACE = 'hackatontable'
    CASSANDRA_HOSTS = ['localhost']
+   CASSANDRA_SETUP_KWARGS = {'port': 9044}
    UPLOAD_FOLDER = '/home/mateusz/BITEHack/backend/media'
 
 
