@@ -3,4 +3,8 @@ static
 templates
 .idea
 *.py[cod]
-media
+
+# Igor
+*/data/*
+*/venv/*
+*/.vscode/*
