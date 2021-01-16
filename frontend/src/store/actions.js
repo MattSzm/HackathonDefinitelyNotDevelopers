@@ -46,8 +46,9 @@ export const loadUser = () => (dispatch, getState) => {
 };
 
 export const predictText = (text) => (dispatch, getState) => {
+    console.log(text)
     dispatch({ type: actionTypes.TEXT_PREDICTION_START })
-    const body = JSON.stringify({ text: "since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially " });
+    const body = JSON.stringify({ text: text});
     console.log(body);
 
     axios.post('/api/predicttext', body, tokenConfig(getState))
@@ -74,6 +75,20 @@ export const predictText = (text) => (dispatch, getState) => {
 // export const uploadImage = () => (dispatch, getState) => {
 
 // }
+
+export const trainAlgo = (id, text) => (dispatch, getState) => {
+    dispatch({ type: actionTypes.TRAIN_ALGO_START })
+    const body = JSON.stringify({ id: id, text: text });
+    console.log(body);
+
+    axios.post('/api/trainalgo', body, tokenConfig(getState))
+    .then(res => {
+        console.log(res)
+        // dispatch({ type: actionTypes.TRAIN_ALGO_SUCCESS, payload: summary })
+        // console.log(res)
+    })
+}
+
 
 export const predictFile = (file) => (dispatch, getState) => {
     dispatch({ type: actionTypes.FILE_PREDICTION_START })

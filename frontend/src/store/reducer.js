@@ -5,7 +5,7 @@ const initialState = {
     token: localStorage.getItem('token'),
     isAuthenticated: false,
     isLoading: false,
-    summary: null,
+    summary: "",
 
     history: null,
 
