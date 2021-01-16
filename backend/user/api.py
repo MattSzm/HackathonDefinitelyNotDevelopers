@@ -17,6 +17,7 @@ class UserRegistration(Resource):
 
     def post(self):
         args = check_user_parser.parse_args()
+        print(args)
         if User.objects.filter(id = args['token']).first():
             return str(True), 200
         return str(False), 404
