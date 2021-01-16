@@ -15,7 +15,9 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
+import HistoryIcon from '@material-ui/icons/History';
+import TimelineIcon from '@material-ui/icons/Timeline';
+import HomeIcon from '@material-ui/icons/Home';
 import { toggleDrawer } from '../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
@@ -27,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
   },
   appBar: {
-    backgroundColor: '#3792cb',
+    backgroundColor: 'red',
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -127,23 +129,34 @@ export default function SideDrawer() {
         </div>
         <Divider />
         <List>
-        <NavLink to={'/Dashboard'}>
+        <NavLink to={'/'}>
           <ListItem button>
             <ListItemIcon>
-              <InboxIcon className={classes.listIcon}/>
+              <HomeIcon className={classes.listIcon}/>
             </ListItemIcon>
-            <ListItemText primary={"Dashboard"} />
+            <ListItemText primary={"Main page"} />
           </ListItem>
           </NavLink>
         </List>
         <Divider />
         <List>
-          <NavLink to={'/predict'}>
+        <NavLink to={'/History'}>
           <ListItem button>
             <ListItemIcon>
-              <InboxIcon className={classes.listIcon}/>
+              <HistoryIcon className={classes.listIcon}/>
             </ListItemIcon>
-            <ListItemText primary={"Digit Prediction"} />
+            <ListItemText primary={"History"} />
+          </ListItem>
+          </NavLink>
+        </List>
+        <Divider />
+        <List>
+          <NavLink to={'/Statistics'}>
+          <ListItem button>
+            <ListItemIcon>
+              <TimelineIcon className={classes.listIcon}/>
+            </ListItemIcon>
+            <ListItemText primary={"Statistics"} />
           </ListItem>
           </NavLink>
         </List>
