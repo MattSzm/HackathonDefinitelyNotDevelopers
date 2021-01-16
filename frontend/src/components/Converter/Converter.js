@@ -11,6 +11,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import {predictFile} from '../../store/actions';
+import {useDispatch} from 'react-redux';
+import ProgBar from './ProgBar';
+import * as progressHandlers from './ProgBar';
 import PropTypes from 'prop-types';
 import {withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -112,8 +116,6 @@ const ColorlibConnector = withStyles({
     return ['Select input type', 'Add input in choosen type', 'Enjoy the result & save it for later'];
   }
 
-
-
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -139,8 +141,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Converter = (props) => {
     const classes = useStyles();
-
+    const [file, setFile] = React.useState();
     const [type, setType] = React.useState('');
+    const dispatch = useDispatch();
 
     const handleChange = (event) => {
         setType(event.target.value);
@@ -149,6 +152,7 @@ const Converter = (props) => {
 
     const handleSubmitProcessing = (event) => {
         handleScdToThd();
+        dispatch(predictFile(file));
     }
 
     const handleFinish = (event) => {
@@ -174,6 +178,7 @@ const Converter = (props) => {
       setActiveStep(0);
     };
 
+
     const stepsPath = (
         <div className="card text-left DesktopOnly">
                 <div className="card-body">
@@ -191,6 +196,22 @@ const Converter = (props) => {
             </div>
     );
 
+    const imageSelectedHandler = event => {
+        let reader = new FileReader();
+        let img = event.target.files[0];
+
+        reader.onloadend = () => {
+            setFile({
+                ...file,
+                selectedImage: img,
+                imagePreviewUrl: reader.result
+            });
+        }
+        reader.readAsDataURL(img);
+
+        console.log(img);
+    }
+
 
     let userInput = null;
     if(type === 'text'){
@@ -202,11 +223,12 @@ const Converter = (props) => {
                     <h5 className="card-title">Load file:</h5>
                     <div className={classes.root}>
                         <input
-                            accept="image/*"
+                            accept="image/*,application/pdf"
                             className={classes.input}
                             id="contained-button-file"
                             multiple
                             type="file"
+                            onChange={imageSelectedHandler}
                         />
                         <label htmlFor="contained-button-file">
                             <Button variant="contained" color="secondary" component="span" endIcon={<CloudUploadIcon/>}>
