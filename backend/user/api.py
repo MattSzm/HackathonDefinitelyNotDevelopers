@@ -12,12 +12,18 @@ check_user_parser.add_argument('token', type=str,
 
 class UserRegistration(Resource):
     def get(self):
-        new_user = User.objects.create()
-        return {'token': str(new_user.id)}, 201
+        if not request.headers.get('Authorization', False):
+            new_user = User.objects.create()
+            return {'token': str(new_user.id)}, 201
+        token = request.headers['Authorization']
+        token_parsed = token.split(' ')[1]
+        if User.objects.filter(id=token_parsed).first():
+            return str(True), 200
+        return str(False), 404
+
 
     def post(self):
         args = check_user_parser.parse_args()
-        print(args)
         if User.objects.filter(id = args['token']).first():
             return str(True), 200
         return str(False), 404

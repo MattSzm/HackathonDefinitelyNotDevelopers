@@ -25,8 +25,8 @@ predict_text_response_fields = {
     'saved_time_seconds': fields.Float
 }
 
-# ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
-ALLOWED_EXTENSIONS = {'pdf'}
+ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'gif'}
+# ALLOWED_EXTENSIONS = {'pdf'}
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -75,7 +75,7 @@ class PredictText(Resource):
         return res, 200
 
 
-class PredictFromPdf(Resource):
+class PredictFromFile(Resource):
     @marshal_with(predict_text_response_fields)
     def post(self):
         args = check_user_parser.parse_args()
@@ -145,4 +145,3 @@ class UserHistory(Resource):
             saved_time_overall += pred.saved_time if pred.saved_time is not None else 0
         results['saved_time'] = saved_time_overall
         return results, 200
-
