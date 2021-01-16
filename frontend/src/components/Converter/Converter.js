@@ -13,8 +13,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import {predictFile} from '../../store/actions';
 import {useDispatch} from 'react-redux';
-import ProgBar from './ProgBar';
-import * as progressHandlers from './ProgBar';
 import PropTypes from 'prop-types';
 import {withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -25,8 +23,14 @@ import InputIcon from '@material-ui/icons/Input';
 import AddToQueueIcon from '@material-ui/icons/AddToQueue';
 import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
 import StepConnector from '@material-ui/core/StepConnector';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import './Converter.css';
 
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const ColorlibConnector = withStyles({
     alternativeLabel: {
@@ -134,15 +138,26 @@ const useStyles = makeStyles((theme) => ({
     selectEmpty: {
         marginTop: theme.spacing(2),
       },
-      input: {
-        display: 'none',
-      },
+    input :{
+      display: 'none'
+    }
   }));
 
 const Converter = (props) => {
     const classes = useStyles();
     const [file, setFile] = React.useState();
     const [type, setType] = React.useState('');
+    const [open, setOpen] = React.useState(false);
+    const [filename, setFilename] = React.useState('');
+
+    const handleClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+
+      setOpen(false);
+    };
+
     const dispatch = useDispatch();
 
     const handleChange = (event) => {
@@ -199,8 +214,10 @@ const Converter = (props) => {
     const imageSelectedHandler = event => {
         let reader = new FileReader();
         let img = event.target.files[0];
-
+        setFilename(img.name);
+        console.log('Plik: ' + img.name);
         reader.onloadend = () => {
+            setOpen(true);
             setFile({
                 ...file,
                 selectedImage: img,
@@ -212,10 +229,27 @@ const Converter = (props) => {
         console.log(img);
     }
 
-
     let userInput = null;
     if(type === 'text'){
-        userInput = <TextArea rows={10} holder="Enter your text here..."/>
+        userInput = <div>
+          <TextArea rows={10} holder="Enter your text here..."/>
+          <br/>
+            <div className="card text-right">
+                <div className="card-body">
+                    <h5 className="card-title">Submit and proceed {type}</h5>
+                    <p className="card-text"></p>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        className={classes.button}
+                        onClick={handleSubmitProcessing}
+                        endIcon={<SendIcon/>}>
+                        Let's make it shorter
+                    </Button>
+                </div>
+            </div><br/>
+        </div>
+        
     }else if (type ==='file'){
         userInput = (
             <div className="card text-right">
@@ -230,6 +264,7 @@ const Converter = (props) => {
                             type="file"
                             onChange={imageSelectedHandler}
                         />
+                        <p>{filename}</p>
                         <label htmlFor="contained-button-file">
                             <Button variant="contained" color="secondary" component="span" endIcon={<CloudUploadIcon/>}>
                             Upload
@@ -238,6 +273,7 @@ const Converter = (props) => {
                         </div>
                 </div>
             </div>
+            
         );
     }
 
@@ -267,22 +303,6 @@ const Converter = (props) => {
             </div><br/>
 
             {userInput}
-
-            <br/>
-            <div className="card text-right">
-                <div className="card-body">
-                    <h5 className="card-title">Submit and proceed {type}</h5>
-                    <p className="card-text"></p>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        className={classes.button}
-                        onClick={handleSubmitProcessing}
-                        endIcon={<SendIcon/>}>
-                        Let's make it shorter
-                    </Button>
-                </div>
-            </div><br/>
         </div>
     );
 
@@ -319,6 +339,11 @@ const Converter = (props) => {
         <div>  
             {stepsPath}<br/>
             <Grid left={left} right ={right}/>
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+              <Alert onClose={handleClose} severity="success">
+                Your photo has been uploaded!
+              </Alert>
+            </Snackbar>
         </div>
         
     );

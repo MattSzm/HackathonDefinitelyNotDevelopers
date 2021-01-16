@@ -1,17 +1,14 @@
 import React from 'react';
-import ProgBar from '../Converter/ProgBar';
-import { makeStyles } from '@material-ui/core/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import Plotly from "plotly.js"
 import createPlotlyComponent from 'react-plotly.js/factory';
-import axios from 'axios';
 import { fetchPlotSummary } from '../../store/actions';
 const Plot = createPlotlyComponent(Plotly);
 
 const Stats = (props) => {
 
-    useEffect(() => dispatch(fetchPlotSummary()));
+    useEffect(() => dispatch(fetchPlotSummary()), []);
     const plotData = useSelector(state => state.reducer.plotSummary)
     const dispatch = useDispatch();
 
