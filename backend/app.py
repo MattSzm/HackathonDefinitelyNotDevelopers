@@ -23,7 +23,10 @@ CORS(app)
 
 
 from user.api import UserRegistration
+from prediction.api import PredictText
 api.add_resource(UserRegistration, "/api/newuser")
+api.add_resource(PredictText, "/api/predicttext")
+
 
 if __name__ == '__main__':
     app.run()
