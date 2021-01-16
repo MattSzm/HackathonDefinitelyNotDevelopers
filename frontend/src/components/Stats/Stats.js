@@ -1,8 +1,9 @@
 import React from 'react';
+import './Stats.css';
 
 const Stats = (props) => {
     return(
-        <div></div>
+        <div>Stats</div>
     );
 }
 
