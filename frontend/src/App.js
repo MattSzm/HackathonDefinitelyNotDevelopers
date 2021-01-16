@@ -13,6 +13,7 @@ const drawerWidth = 64;
 
 const useStyles = makeStyles((theme) => ({
     content: {
+        backgroundPositionY: '100%',
         flexGrow: 1,
         padding: theme.spacing(3),
         color: 'black',

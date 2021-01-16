@@ -8,7 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import NightsStayIcon from '@material-ui/icons/NightsStay';
+import logo from '../assets/logobook.png';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
   logo: {
     fontSize: "36px",
     margin: '0 10px',
+    height: '45px',
     fill: 'gold'
   },
   sectionDesktop: {
@@ -77,7 +78,7 @@ export default function PrimarySearchAppBar(props) {
           >
             <MenuIcon />
           </IconButton>
-          <NightsStayIcon className={classes.logo}></NightsStayIcon>
+          <img src={logo} alt="logo" className={classes.logo}></img>
           <Typography className={classes.title} variant="h6" noWrap>
             AppName
           </Typography>

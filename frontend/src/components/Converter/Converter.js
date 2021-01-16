@@ -15,8 +15,115 @@ import {predictFile} from '../../store/actions';
 import {useDispatch} from 'react-redux';
 import ProgBar from './ProgBar';
 import * as progressHandlers from './ProgBar';
+import PropTypes from 'prop-types';
+import {withStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
+import InputIcon from '@material-ui/icons/Input';
+import AddToQueueIcon from '@material-ui/icons/AddToQueue';
+import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
+import StepConnector from '@material-ui/core/StepConnector';
+import './Converter.css';
+
+
+const ColorlibConnector = withStyles({
+    alternativeLabel: {
+      top: 22,
+    },
+    active: {
+      '& $line': {
+        backgroundImage:
+          'linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)',
+      },
+    },
+    completed: {
+      '& $line': {
+        backgroundImage:
+          'linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)',
+      },
+    },
+    line: {
+      height: 3,
+      border: 0,
+      backgroundColor: '#eaeaf0',
+      borderRadius: 1,
+    },
+  })(StepConnector);
+  
+  const useColorlibStepIconStyles = makeStyles({
+    root: {
+      backgroundColor: '#ccc',
+      zIndex: 1,
+      color: '#fff',
+      width: 50,
+      height: 50,
+      display: 'flex',
+      borderRadius: '50%',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    active: {
+      backgroundImage:
+        'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
+      boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
+    },
+    completed: {
+      backgroundImage:
+        'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
+    },
+  });
+  
+  function ColorlibStepIcon(props) {
+    const classes = useColorlibStepIconStyles();
+    const { active, completed } = props;
+  
+    const icons = {
+      1: <InputIcon />,
+      2: <AddToQueueIcon />,
+      3: <DoneOutlineIcon />,
+    };
+  
+    return (
+      <div
+        className={clsx(classes.root, {
+          [classes.active]: active,
+          [classes.completed]: completed,
+        })}
+      >
+        {icons[String(props.icon)]}
+      </div>
+    );
+  }
+  
+  ColorlibStepIcon.propTypes = {
+    /**
+     * Whether this step is active.
+     */
+    active: PropTypes.bool,
+    /**
+     * Mark the step as completed. Is passed to child components.
+     */
+    completed: PropTypes.bool,
+    /**
+     * The label displayed in the step icon.
+     */
+    icon: PropTypes.node,
+  };
+  
+  function getSteps() {
+    return ['Select input type', 'Add input in choosen type', 'Enjoy the result & save it for later'];
+  }
 
 const useStyles = makeStyles((theme) => ({
+    root: {
+        width: '100%',
+      },
+      instructions: {
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1),
+      },
     button: {
       margin: theme.spacing(1),
     },
@@ -40,7 +147,54 @@ const Converter = (props) => {
 
     const handleChange = (event) => {
         setType(event.target.value);
+        handleFstToScd();
     };
+
+    const handleSubmitProcessing = (event) => {
+        handleScdToThd();
+        dispatch(predictFile(file));
+    }
+
+    const handleFinish = (event) => {
+        handleReset()
+    }
+
+    const handleDelete = (event) => {
+        handleReset()
+    }
+
+    const [activeStep, setActiveStep] = React.useState(0);
+    const steps = getSteps();
+  
+    const handleFstToScd = () => {
+      setActiveStep((prevActiveStep) => 1);
+    };
+  
+    const handleScdToThd = () => {
+      setActiveStep((prevActiveStep) => 2);
+    };
+  
+    const handleReset = () => {
+      setActiveStep(0);
+    };
+
+
+    const stepsPath = (
+        <div className="card text-left DesktopOnly">
+                <div className="card-body">
+                    <p className="card-text"></p>
+                    <div className={classes.root}>
+                        <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
+                        {steps.map((label) => (
+                            <Step key={label}>
+                            <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
+                            </Step>
+                        ))}
+                        </Stepper>
+                    </div>
+                </div>
+            </div>
+    );
 
     const imageSelectedHandler = event => {
         let reader = new FileReader();
@@ -57,6 +211,7 @@ const Converter = (props) => {
 
         console.log(img);
     }
+
 
     let userInput = null;
     if(type === 'text'){
@@ -122,8 +277,8 @@ const Converter = (props) => {
                         variant="contained"
                         color="secondary"
                         className={classes.button}
-                        endIcon={<SendIcon/>}
-                        onClick={() => dispatch(predictFile(file))}>
+                        onClick={handleSubmitProcessing}
+                        endIcon={<SendIcon/>}>
                         Let's make it shorter
                     </Button>
                 </div>
@@ -142,6 +297,7 @@ const Converter = (props) => {
                     <Button
                         variant="contained"
                         color="secondary"
+                        onClick={handleFinish}
                         className={classes.button}
                         endIcon={<SaveIcon/>}>
                         Save it, I'm satisfied
@@ -149,6 +305,7 @@ const Converter = (props) => {
                     <Button
                         variant="contained"
                         color="secondary"
+                        onClick={handleDelete}
                         className={classes.button}
                         endIcon={<DeleteIcon/>}>
                         Delete fesult 
@@ -159,7 +316,8 @@ const Converter = (props) => {
     );
 
     return(
-        <div>        
+        <div>  
+            {stepsPath}<br/>
             <Grid left={left} right ={right}/>
         </div>
         
