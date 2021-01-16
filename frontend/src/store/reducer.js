@@ -10,7 +10,14 @@ const initialState = {
     history: null,
 
     selectedImage: null,
-    imagePreviewUrl: null
+    imagePreviewUrl: null,
+
+    plotSummary: {
+        x: [],
+        y1: [],
+        y2: [],
+        y3: []
+    }
 }
 
 export default (state=initialState, action) => {
@@ -34,7 +41,7 @@ export default (state=initialState, action) => {
                 ...state,
                 summary: action.payload.summary
             }
-        case actionTypes.FETCH_HISTORY_START:
+        case actionTypes.FETCH_SUMMARY_START:
         case actionTypes.TEXT_PREDICTION_START:
         case actionTypes.USER_LOADING_START:
         case actionTypes.FILE_PREDICTION_START:
@@ -47,10 +54,10 @@ export default (state=initialState, action) => {
                 ...state,
                 summary: action.payload.summary
             }
-        case actionTypes.FETCH_HISTORY_SUCCESS:
+        case actionTypes.FETCH_SUMMARY_SUCCESS:
             return {
                 ...state,
-                history: action.payload.history,
+                plotSummary: action.payload,
             }
         default:
             return state;

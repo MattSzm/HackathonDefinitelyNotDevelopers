@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Converter from './components/Converter/Converter';
 import History from './components/History/History';
 import Stats from './components/Stats/Stats';
-import { loadUser, predictText, fetchHistory } from './store/actions';
+import { loadUser, predictText, fetchPlotSummary } from './store/actions';
 
 const drawerWidth = 64;
 
@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 export default function App() {
 
   useEffect(() => dispatch(loadUser()));
-  useEffect(() => dispatch(fetchHistory()));
 
   const dispatch = useDispatch();
   const classes = useStyles();

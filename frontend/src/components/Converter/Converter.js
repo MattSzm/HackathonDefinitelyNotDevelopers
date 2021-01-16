@@ -16,7 +16,6 @@ import {useDispatch} from 'react-redux';
 import ProgBar from './ProgBar';
 import * as progressHandlers from './ProgBar';
 
-
 const useStyles = makeStyles((theme) => ({
     button: {
       margin: theme.spacing(1),

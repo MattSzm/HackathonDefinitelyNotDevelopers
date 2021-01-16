@@ -58,18 +58,18 @@ export const predictText = (text) => (dispatch, getState) => {
         })
 };
 
-export const fetchHistory = () => (dispatch, getState) => {
-    dispatch({ type: actionTypes.FETCH_HISTORY_START });
+// export const fetchHistory = () => (dispatch, getState) => {
+//     dispatch({ type: actionTypes.FETCH_HISTORY_START });
 
-    axios.get('/api/plotsummary', tokenConfig(getState))
-    .then(res => {
-        console.log(res)
-        dispatch({
-            type: actionTypes.FETCH_HISTORY_SUCCESS,
-            payload: res.data
-        });
-    })
-}
+//     axios.get('/api/plotsummary', tokenConfig(getState))
+//     .then(res => {
+//         console.log(res)
+//         dispatch({
+//             type: actionTypes.FETCH_HISTORY_SUCCESS,
+//             payload: res.data
+//         });
+//     })
+// }
 
 // export const uploadImage = () => (dispatch, getState) => {
 
@@ -86,5 +86,18 @@ export const predictFile = (file) => (dispatch, getState) => {
         let summary = res.data
         dispatch({ type: actionTypes.FILE_PREDICTION_SUCCESS, payload: summary })
         console.log(res)
+    })
+}
+
+export const fetchPlotSummary = () => (dispatch, getState) => {
+    dispatch({ type: actionTypes.FETCH_SUMMARY_START });
+
+    axios.get('/api/plotsummary', tokenConfig(getState))
+    .then(res => {
+        console.log(res)
+        dispatch({
+            type: actionTypes.FETCH_SUMMARY_SUCCESS,
+            payload: res.data
+        });
     })
 }
