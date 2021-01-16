@@ -3,30 +3,29 @@ from user.model import User
 from flask_restful import Resource, fields, marshal_with, reqparse, abort
 from flask import jsonify, request
 from app import redis_client, app
-import json
 import os
-from user.api import check_user_parser
+from datetime import datetime
 import textract
 from werkzeug.utils import secure_filename
 import random
+import json
 
 
 predict_text = reqparse.RequestParser()
-predict_text.add_argument('token', type=str,
-                          help='Enter token', required=True)
 predict_text.add_argument('text', type=str,
                           help='enter text to predict', required=False)
 
 predict_text_response_fields = {
     'id': fields.String,
     'prediction': fields.String,
+    'created_time': fields.String,
     'words_count_before': fields.Integer,
     'words_count_after': fields.Integer,
     'saved_time_seconds': fields.Float
 }
 
-# ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
-ALLOWED_EXTENSIONS = {'pdf'}
+ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'gif'}
+# ALLOWED_EXTENSIONS = {'pdf'}
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -39,11 +38,17 @@ def generate_better_name(filename):
 class PredictText(Resource):
     @marshal_with(predict_text_response_fields)
     def post(self):
+        if (not request.headers.get('Authorization') or
+                request.headers.get('Authorization') == 'Token undefined' or
+                request.headers.get('Authorization') == ''):
+            abort(404, message='Bad token')
         args = predict_text.parse_args()
-        if args.get('token') is None or args.get('text') is None:
+        if args.get('text') is None:
             abort(404)
 
-        user = User.objects.filter(id = args['token']).first()
+        token = request.headers['Authorization']
+        token_parsed = token.split(' ')[1]
+        user = User.objects.filter(id = token_parsed).first()
         if not user:
             abort(404)
 
@@ -64,27 +69,32 @@ class PredictText(Resource):
                                   content=text_to_predict,
                                   category="music",
                                   prediction='hgfghg',
-                                  saved_time=saved_time)
-
+                                  saved_time=saved_time,
+                                  created_time=datetime.now())
         res = {
             'id': created_prediction_object.id,
             'prediction': created_prediction_object.prediction,
+            'created_time': str(created_prediction_object.created_time),
             'words_count_before': words_count_before,
             'words_count_after': words_count_after,
             'saved_time_seconds': saved_time}
         return res, 200
 
 
-class PredictFromPdf(Resource):
+class PredictFromFile(Resource):
     @marshal_with(predict_text_response_fields)
     def post(self):
-        args = check_user_parser.parse_args()
-        if args.get('token') is None:
-            abort(404)
+        if (not request.headers.get('Authorization') or
+                request.headers.get('Authorization') == 'Token undefined' or
+                request.headers.get('Authorization') == ''):
+            abort(404, message = 'No user')
+
         if 'file' not in request.files:
             abort(404, message='NO FILE')
 
-        user = User.objects.filter(id=args['token']).first()
+        token = request.headers['Authorization']
+        token_parsed = token.split(' ')[1]
+        user = User.objects.filter(id = token_parsed).first()
         if not user:
             abort(404)
 
@@ -116,11 +126,13 @@ class PredictFromPdf(Resource):
                                       content=converted_text_to_predict,
                                       category="music",
                                       prediction='from pdf',
-                                      saved_time=saved_time)
+                                      saved_time=saved_time,
+                                      created_time=datetime.now())
 
             res = {
                 'id': created_prediction_object.id,
                 'prediction': created_prediction_object.prediction,
+                'created_time': str(created_prediction_object.created_time),
                 'words_count_before': words_count_before,
                 'words_count_after': words_count_after,
                 'saved_time_seconds': saved_time}
@@ -128,21 +140,91 @@ class PredictFromPdf(Resource):
 
 
 class UserHistory(Resource):
-    def post(self):
-        args = check_user_parser.parse_args()
-        user = User.objects.filter(id = args['token']).first()
+    def get(self):
+        if (not request.headers.get('Authorization') or
+                request.headers.get('Authorization') == 'Token undefined' or
+                request.headers.get('Authorization') == ''):
+            abort(404, message='Bad token')
+        token = request.headers['Authorization']
+        token_parsed = token.split(' ')[1]
+        user = User.objects.filter(id=token_parsed).first()
         if not user:
             abort(404)
+
         user_predictions = Prediction.objects.filter(user=user.id)
         results = {'data': []}
         saved_time_overall = 0
+
         for pred in user_predictions:
+            pred_created_time = str(pred.created_time) if pred.created_time else ''
             results['data'].append({
                 'id': str(pred.id),
                 'content': pred.content,
-                'prediction': pred.prediction
+                'prediction': pred.prediction,
+                'created_time': pred_created_time
             })
             saved_time_overall += pred.saved_time if pred.saved_time is not None else 0
         results['saved_time'] = saved_time_overall
         return results, 200
 
+
+class PlotsSummary(Resource):
+    def get(self):
+        cache = redis_client.get('summary')
+        if not cache:
+            all_predictions = Prediction.objects.all()
+            filtered_predictions = [pred for pred in all_predictions if pred.created_time]
+            filtered_predictions.sort(key=lambda x: x.created_time)
+
+            #x - date
+            #y1 - len before
+            #y2 - len after
+            #y3 - saved time
+            x, y1, y2, y3 = [], [], [], []
+            prev = None
+            curr_x, curr_y1, curr_y2, curr_y3 = None, None, None, None
+            total_time_in_seconds = 0
+            for single in filtered_predictions:
+                #todo: change to days
+                date = str(single.created_time).split(':')[1]
+                total_time_in_seconds += single.saved_time
+                if not prev:
+                    prev = date
+                    curr_x = date
+                    curr_y1 = len(single.content.split(' '))
+                    curr_y2 = len(single.prediction.split(' '))
+                    curr_y3 = single.saved_time
+                elif date != prev:
+                    x.append(curr_x)
+                    y1.append(curr_y1)
+                    y2.append(curr_y2)
+                    y3.append(curr_y3)
+                    prev = date
+                    curr_x = date
+                    curr_y1 = len(single.content.split(' '))
+                    curr_y2 = len(single.prediction.split(' '))
+                    curr_y3 = single.saved_time
+                else:
+                    curr_y1 += len(single.content.split(' '))
+                    curr_y2 += len(single.prediction.split(' '))
+                    curr_y3 += single.saved_time
+            x.append(curr_x)
+            y1.append(curr_y1)
+            y2.append(curr_y2)
+            y3.append(curr_y3)
+
+            res = {
+                'x': x,
+                'y1': y1,
+                'y2': y2,
+                'y3': y3,
+                'total_saved_time': total_time_in_seconds
+            }
+            #todo 60 seconds - change to 86400
+            redis_client.set('summary', json.dumps(res), ex=60)
+            print('created new one')
+        else:
+            res = json.loads(cache)
+            print('loaded')
+        print(res)
+        return res, 200
