@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function App() {
 
-  // useEffect(() => dispatch(loadUser()));
+  useEffect(() => dispatch(loadUser()), []);
 
   const dispatch = useDispatch();
   const classes = useStyles();

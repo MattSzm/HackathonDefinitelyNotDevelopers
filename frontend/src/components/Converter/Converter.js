@@ -1,5 +1,4 @@
 import React from 'react';
-import TextArea from '../TextArea/TextArea';
 import Grid from '../Grid/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -11,12 +10,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import {predictFile} from '../../store/actions';
-import {useDispatch} from 'react-redux';
-import ProgBar from './ProgBar';
-import * as progressHandlers from './ProgBar';
+import {predictFile, predictText} from '../../store/actions';
+import { useDispatch, useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
-import {withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -140,10 +137,14 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 const Converter = (props) => {
+
+    const dispatch = useDispatch();
+    const summary = useSelector(state => state.reducer.summary);
     const classes = useStyles();
     const [file, setFile] = React.useState();
     const [type, setType] = React.useState('');
-    const dispatch = useDispatch();
+    const [text, setText] = React.useState('')
+
 
     const handleChange = (event) => {
         setType(event.target.value);
@@ -152,7 +153,10 @@ const Converter = (props) => {
 
     const handleSubmitProcessing = (event) => {
         handleScdToThd();
-        dispatch(predictFile(file));
+        if (type === "text") {
+            dispatch(predictText(text))
+        } else {
+            dispatch(predictFile(file));}
     }
 
     const handleFinish = (event) => {
@@ -177,6 +181,11 @@ const Converter = (props) => {
     const handleReset = () => {
       setActiveStep(0);
     };
+
+    const onInputChandler = (event) => {
+      setText(event.target.value);
+      console.log(text)
+    }
 
 
     const stepsPath = (
@@ -212,10 +221,15 @@ const Converter = (props) => {
         console.log(img);
     }
 
-
     let userInput = null;
     if(type === 'text'){
-        userInput = <TextArea rows={10} holder="Enter your text here..."/>
+        userInput = <textarea 
+            className="form-control" 
+            id="exampleFormControlTextarea1" 
+            rows={10} 
+            placeholder={"Enter your text here..."}
+            value={text}
+            onChange={(event) => onInputChandler(event)}></textarea>
     }else if (type ==='file'){
         userInput = (
             <div className="card text-right">
@@ -288,7 +302,11 @@ const Converter = (props) => {
 
     const right = (
         <div>
-            <TextArea rows={10} holder=""/>
+        <textarea
+            value={summary}
+            className="form-control" 
+            id="ex2" 
+            rows={10} ></textarea>
             <br/>
             <div className="card text-right">
                 <div className="card-body">
