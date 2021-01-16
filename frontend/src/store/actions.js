@@ -18,6 +18,20 @@ export const tokenConfig = (getState) => {
     return config;
 };
 
+export const mediaTokenConfig = (getState) => {
+    const token = getState().reducer.token;
+    const config = {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    };
+    if (token) {
+        config.headers['Authorization'] = `Token ${token}`;
+    } else {
+        config.headers['Authorization'] = '';
+    }
+    return config;
+};
 export const loadUser = () => (dispatch, getState) => {
     dispatch({ type: actionTypes.USER_LOADING_START });
 
@@ -47,7 +61,7 @@ export const predictText = (text) => (dispatch, getState) => {
 export const fetchHistory = () => (dispatch, getState) => {
     dispatch({ type: actionTypes.FETCH_HISTORY_START });
 
-    axios.get('/api/userhistory', tokenConfig(getState))
+    axios.get('/api/plotsummary', tokenConfig(getState))
     .then(res => {
         console.log(res)
         dispatch({
@@ -64,9 +78,10 @@ export const fetchHistory = () => (dispatch, getState) => {
 export const predictFile = (file) => (dispatch, getState) => {
     dispatch({ type: actionTypes.FILE_PREDICTION_START })
     const formData = new FormData();
-    formData.append("file", file)
+    formData.append("file", file.selectedImage)
+    console.log(file.selectedImage)
 
-    axios.post('/api/predictfile', formData, tokenConfig(getState))
+    axios.post('/api/predictfile', formData, mediaTokenConfig(getState))
     .then(res => {
         let summary = res.data
         dispatch({ type: actionTypes.FILE_PREDICTION_SUCCESS, payload: summary })

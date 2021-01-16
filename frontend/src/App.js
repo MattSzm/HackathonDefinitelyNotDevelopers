@@ -1,80 +1,56 @@
-import logo from './logo.svg';
 import './App.css';
-import Layout from './components/Layout/Layout';
-import Grid from './components/Grid/Grid';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Switch, Route, Redirect } from 'react-router-dom';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Layout from './components/Layout/Layout';
+import { Switch, Route } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import Converter from './components/Converter/Converter';
+import History from './components/History/History';
+import Stats from './components/Stats/Stats';
 import { loadUser, predictText, fetchHistory } from './store/actions';
-import store from './store/store';
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
 const drawerWidth = 64;
 
-// const useStyles = makeStyles((theme) => ({
-//     content: {
-//         backgroundColor: 'white',
-//         flexGrow: 1,
-//         padding: theme.spacing(2),
-//         color: '#ffffff',
-//         transition: theme.transitions.create('margin', {
-//             easing: theme.transitions.easing.sharp,
-//             duration: theme.transitions.duration.leavingScreen,
-//         }),
-//         marginLeft: 64,
-//         height: '100%'
-//     },
-//     plot: {
-//         height: '100%',
-//         width: '100%'
-//     }
-// }));
+const useStyles = makeStyles((theme) => ({
+    content: {
+        flexGrow: 1,
+        padding: theme.spacing(3),
+        color: 'black',
+        transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        marginLeft: drawerWidth,
+        height: '100%'
+    },
+    plot: {
+        height: '100%',
+        width: '100%'
+    }
+}));
 
-const classes = {
-  content: {
-    backgroundColor: 'white',
-    flexGrow: 1,
-    // padding: theme.spacing(2),
-    color: '#ffffff',
-    // transition: theme.transitions.create('margin', {
-    //     easing: theme.transitions.easing.sharp,
-    //     duration: theme.transitions.duration.leavingScreen,
-    // }),
-    marginLeft: 64,
-    height: '100%'
-  },
-  plot: {
-      height: '100%',
-      width: '100%'
-  }
-}
+export default function App() {
 
-class App extends Component {
-  componentDidMount() {
-    store.dispatch(loadUser());
-    store.dispatch(predictText());
-    store.dispatch(fetchHistory());
-  }
+  useEffect(() => dispatch(loadUser()));
+  useEffect(() => dispatch(fetchHistory()));
 
-  render() {
-    return (
-      <div className="App">
+  const dispatch = useDispatch();
+  const classes = useStyles();
+
+  return (
+    <div className="App">
       <Layout>
       </Layout>
-      <div className={classes.content}>   
+      <div className={classes.content}>
         <Switch>
-              <Route exact path="/" render={() => (
-                <Redirect to="/temp" />
-              )} />
-              <Route exact path="/home" component={Grid}></Route>
+              <Route exact path="/" component={Converter} />
+              <Route exact path="/history" component={History} />
+              <Route exact path="/statistics" component={Stats} />
         </Switch>
       </div>
     </div>
     );
   }
-}
 
 // export default function App() {
 //   useEffect(() => dispatch(loadUser()));
@@ -99,8 +75,8 @@ class App extends Component {
 // }
 
 
-const mapStateToProps = state => ({
-  isAuth: state.reducer.isAuthenticated
-});
+// const mapStateToProps = state => ({
+//   isAuth: state.reducer.isAuthenticated
+// });
 
-export default connect(mapStateToProps)(App);
+// export default connect(mapStateToProps)(App);

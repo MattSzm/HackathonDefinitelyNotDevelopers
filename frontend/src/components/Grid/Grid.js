@@ -1,32 +1,26 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button'
+import './Grid.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
+    flexGrow: 1
+  }
 }));
 
-export default function FullWidthGrid() {
+export default function FullWidthGrid(props) {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
-          <Paper className={classes.paper}>xs=12</Paper>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper className={classes.paper}>xs=12 sm=6</Paper>
-        </Grid>
+        <Grid container spacing={3} className="Grid">
+            <Grid item xs={12} md={6}>
+                {props.left}
+            </Grid>
+            <Grid item xs={12} md={6}>
+                {props.right}
+            </Grid>
       </Grid>
     </div>
   );
