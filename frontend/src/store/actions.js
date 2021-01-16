@@ -32,6 +32,7 @@ export const loadUser = () => (dispatch, getState) => {
 };
 
 export const predictText = (text) => (dispatch, getState) => {
+    dispatch({ type: actionTypes.TEXT_PREDICTION_START })
     const body = JSON.stringify({ text: "since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially " });
     console.log(body);
 
@@ -39,6 +40,36 @@ export const predictText = (text) => (dispatch, getState) => {
         .then(res => {
             let summary = res.data
             dispatch({ type: actionTypes.TEXT_PREDICTION_SUCCESS, payload: summary })
+            console.log(res)
         })
 };
 
+export const fetchHistory = () => (dispatch, getState) => {
+    dispatch({ type: actionTypes.FETCH_HISTORY_START });
+
+    axios.get('/api/userhistory', tokenConfig(getState))
+    .then(res => {
+        console.log(res)
+        dispatch({
+            type: actionTypes.FETCH_HISTORY_SUCCESS,
+            payload: res.data
+        });
+    })
+}
+
+// export const uploadImage = () => (dispatch, getState) => {
+
+// }
+
+export const predictFile = (file) => (dispatch, getState) => {
+    dispatch({ type: actionTypes.FILE_PREDICTION_START })
+    const formData = new FormData();
+    formData.append("file", file)
+
+    axios.post('/api/predictfile', formData, tokenConfig(getState))
+    .then(res => {
+        let summary = res.data
+        dispatch({ type: actionTypes.FILE_PREDICTION_SUCCESS, payload: summary })
+        console.log(res)
+    })
+}

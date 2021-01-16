@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { loadUser, predictText } from './store/actions';
+import { loadUser, predictText, fetchHistory } from './store/actions';
 import store from './store/store';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -55,6 +55,7 @@ class App extends Component {
   componentDidMount() {
     store.dispatch(loadUser());
     store.dispatch(predictText());
+    store.dispatch(fetchHistory());
   }
 
   render() {
