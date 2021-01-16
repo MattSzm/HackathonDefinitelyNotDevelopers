@@ -1,4 +1,4 @@
-from text_rank import TextRank
+from ai.text_rank import TextRank
 
 class ModelWarper:
     def __init__(self):

@@ -7,4 +7,4 @@ if __name__ == '__main__':
                              value_deserializer=lambda x: json.loads(x),
                              auto_offset_reset='earliest')
     for msg in consumer:
-        print(msg.key, msg.value['content'], sep='\n')
+        print(msg.key, msg.value, sep='\n')

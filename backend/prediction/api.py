@@ -2,7 +2,7 @@ from prediction.model import Prediction
 from user.model import User
 from flask_restful import Resource, fields, marshal_with, reqparse, abort
 from flask import jsonify, request
-from app import redis_client, app
+from app import redis_client, app, ai_connector, links_extractor
 import os
 from datetime import datetime
 import textract
@@ -25,13 +25,15 @@ train_algorithm.add_argument('text', type=str,
                              help='enter fixed text',
                              required=False)
 
+
 predict_text_response_fields = {
     'id': fields.String,
     'prediction': fields.String,
     'created_time': fields.String,
     'words_count_before': fields.Integer,
     'words_count_after': fields.Integer,
-    'saved_time_seconds': fields.Float
+    'saved_time_seconds': fields.Float,
+    'links': fields.List(fields.String)
 }
 
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'gif'}
@@ -63,21 +65,18 @@ class PredictText(Resource):
 
         text_to_predict = args['text']
         words_count_before = len(text_to_predict.split(' '))
-        #todo: change to 50
-        if words_count_before < 1:
+        if words_count_before < 20:
             abort(409)
 
-        # ai working
-        # need to be split as well
-        words_count_after = 1
-        #saved time in seconds
+        predicted = ai_connector.summarize(text_to_predict)
+        links_in_text = list(set(links_extractor.get_all_links(text_to_predict)))
+        words_count_after = len(predicted.split(' '))
         saved_time = (words_count_before-words_count_after)/150*60
-
 
         created_prediction_object = Prediction.objects.create(user=user.id,
                                   content=text_to_predict,
-                                  category="music",
-                                  prediction='hgfghg',
+                                  category=".",
+                                  prediction=predicted,
                                   saved_time=saved_time,
                                   created_time=datetime.now())
         res = {
@@ -86,7 +85,8 @@ class PredictText(Resource):
             'created_time': str(created_prediction_object.created_time),
             'words_count_before': words_count_before,
             'words_count_after': words_count_after,
-            'saved_time_seconds': saved_time}
+            'saved_time_seconds': saved_time,
+            'links': links_in_text}
         return res, 200
 
 
@@ -119,21 +119,19 @@ class PredictFromFile(Resource):
             converted_text_to_predict = text.decode('utf-8')
 
             words_count_before = len(converted_text_to_predict.split(' '))
-            #todo: change to 50
-            if words_count_before < 1:
+            if words_count_before < 20:
                 abort(409)
 
-            # ai working
-            # need to be split as well
-            words_count_after = 1
-            #saved time in seconds
+            predicted = ai_connector.summarize(converted_text_to_predict)
+            links_in_text = list(set(links_extractor.get_all_links(converted_text_to_predict)))
+            words_count_after = len(predicted.split(' '))
             saved_time = (words_count_before-words_count_after)/150*60
 
 
             created_prediction_object = Prediction.objects.create(user=user.id,
                                       content=converted_text_to_predict,
-                                      category="music",
-                                      prediction='from pdf',
+                                      category=".",
+                                      prediction=predicted,
                                       saved_time=saved_time,
                                       created_time=datetime.now())
 
@@ -143,7 +141,8 @@ class PredictFromFile(Resource):
                 'created_time': str(created_prediction_object.created_time),
                 'words_count_before': words_count_before,
                 'words_count_after': words_count_after,
-                'saved_time_seconds': saved_time}
+                'saved_time_seconds': saved_time,
+                'links': links_in_text}
             return res, 200
         return {}, 404
 
@@ -266,6 +265,6 @@ class TrainAlgorithm(Resource):
                           value={'content': found_prediction.content,
                                  'result': args['text']})
             return str(True), 200
-        return str(False), 200
+        return str(False), 304
 
 
