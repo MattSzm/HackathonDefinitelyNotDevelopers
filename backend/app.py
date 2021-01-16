@@ -25,11 +25,13 @@ CORS(app)
 from user.api import UserRegistration
 from prediction.api import (PredictText,
                             UserHistory,
-                            PredictFromFile)
+                            PredictFromFile,
+                            PlotsSummary)
 api.add_resource(UserRegistration, "/api/newuser")
 api.add_resource(PredictText, "/api/predicttext")
 api.add_resource(PredictFromFile, "/api/predictfile")
 api.add_resource(UserHistory, '/api/userhistory')
+api.add_resource(PlotsSummary, '/api/plotssummary')
 
 
 if __name__ == '__main__':

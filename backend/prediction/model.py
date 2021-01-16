@@ -10,6 +10,7 @@ class Prediction(db.Model):
     category = db.columns.Text()
     prediction = db.columns.Text()
     saved_time = db.columns.Float()
+    created_time = db.columns.DateTime()
 
     def __repr__(self):
         return f'{self.user}/{self.id}'
