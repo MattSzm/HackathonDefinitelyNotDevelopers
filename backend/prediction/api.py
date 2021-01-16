@@ -9,11 +9,21 @@ import textract
 from werkzeug.utils import secure_filename
 import random
 import json
+from kafka_producer import producer
 
 
 predict_text = reqparse.RequestParser()
 predict_text.add_argument('text', type=str,
-                          help='enter text to predict', required=False)
+                          help='enter text to predict',
+                          required=False)
+
+train_algorithm = reqparse.RequestParser()
+train_algorithm.add_argument('id', type=str,
+                             help='enter prediction id',
+                             required=False)
+train_algorithm.add_argument('text', type=str,
+                             help='enter fixed text',
+                             required=False)
 
 predict_text_response_fields = {
     'id': fields.String,
@@ -25,7 +35,6 @@ predict_text_response_fields = {
 }
 
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'gif'}
-# ALLOWED_EXTENSIONS = {'pdf'}
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -97,7 +106,6 @@ class PredictFromFile(Resource):
         user = User.objects.filter(id = token_parsed).first()
         if not user:
             abort(404)
-
         file = request.files['file']
         if file.filename == '':
             abort(404, message='No selected file')
@@ -137,7 +145,7 @@ class PredictFromFile(Resource):
                 'words_count_after': words_count_after,
                 'saved_time_seconds': saved_time}
             return res, 200
-
+        return {}, 404
 
 class UserHistory(Resource):
     def get(self):
@@ -185,8 +193,7 @@ class PlotsSummary(Resource):
             curr_x, curr_y1, curr_y2, curr_y3 = None, None, None, None
             total_time_in_seconds = 0
             for single in filtered_predictions:
-                #todo: change to days
-                date = str(single.created_time).split(':')[1]
+                date = str(single.created_time).split(' ')[0]
                 total_time_in_seconds += single.saved_time
                 if not prev:
                     prev = date
@@ -198,7 +205,7 @@ class PlotsSummary(Resource):
                     x.append(curr_x)
                     y1.append(curr_y1)
                     y2.append(curr_y2)
-                    y3.append(curr_y3)
+                    y3.append(int(curr_y3))
                     prev = date
                     curr_x = date
                     curr_y1 = len(single.content.split(' '))
@@ -211,7 +218,7 @@ class PlotsSummary(Resource):
             x.append(curr_x)
             y1.append(curr_y1)
             y2.append(curr_y2)
-            y3.append(curr_y3)
+            y3.append(int(curr_y3))
 
             res = {
                 'x': x,
@@ -220,11 +227,45 @@ class PlotsSummary(Resource):
                 'y3': y3,
                 'total_saved_time': total_time_in_seconds
             }
-            #todo 60 seconds - change to 86400
+            json_url = os.path.join(app.config['UPLOAD_FOLDER'] + "/dumb_data",
+                                    "dumb_summary.json")
+            with open(json_url) as file:
+                data = json.load(file)
+                res['x'] = res['x'] + data['x']
+                res['y1'] = res['y1'] + list(reversed(data['y1']))
+                res['y2'] = res['y2'] + list(reversed(data['y2']))
+                res['y3'] = res['y3'] + list(reversed(data['y3']))
+            # todo 60 seconds - change to 14400 (every 4hours update)
             redis_client.set('summary', json.dumps(res), ex=60)
-            print('created new one')
         else:
             res = json.loads(cache)
-            print('loaded')
-        print(res)
         return res, 200
+
+
+class TrainAlgorithm(Resource):
+    def post(self):
+        if (not request.headers.get('Authorization') or
+                request.headers.get('Authorization') == 'Token undefined' or
+                request.headers.get('Authorization') == ''):
+            abort(404, message='Bad token')
+        token = request.headers['Authorization']
+        token_parsed = token.split(' ')[1]
+        user = User.objects.filter(id=token_parsed).first()
+        if not user:
+            abort(404)
+
+        args = train_algorithm.parse_args()
+        if args.get('text') is None or args.get('id') is None:
+            abort(400, message='Bad data')
+
+        found_prediction = Prediction.objects.filter(user=token_parsed,
+                                                     id=args['id']).first()
+        if found_prediction:
+            producer.send('hackaton',
+                          key=str(args['id']),
+                          value={'content': found_prediction.content,
+                                 'result': args['text']})
+            return str(True), 200
+        return str(False), 200
+
+

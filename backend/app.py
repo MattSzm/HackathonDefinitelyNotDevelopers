@@ -26,13 +26,14 @@ from user.api import UserRegistration
 from prediction.api import (PredictText,
                             UserHistory,
                             PredictFromFile,
-                            PlotsSummary)
+                            PlotsSummary,
+                            TrainAlgorithm)
 api.add_resource(UserRegistration, "/api/newuser")
 api.add_resource(PredictText, "/api/predicttext")
 api.add_resource(PredictFromFile, "/api/predictfile")
 api.add_resource(UserHistory, '/api/userhistory')
-api.add_resource(PlotsSummary, '/api/plotssummary')
-
+api.add_resource(PlotsSummary, '/api/plotsummary')
+api.add_resource(TrainAlgorithm, '/api/trainalgo')
 
 if __name__ == '__main__':
     app.run()

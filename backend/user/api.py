@@ -23,6 +23,7 @@ class UserRegistration(Resource):
             return str(False), 404
 
 
+    #useless
     def post(self):
         args = check_user_parser.parse_args()
         if User.objects.filter(id = args['token']).first():

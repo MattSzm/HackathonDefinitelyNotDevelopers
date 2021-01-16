@@ -1,5 +1,5 @@
-kafka/zk-single-kafka-multiple/
-cassandra_cluster/cassandra_data_1/
-cassandra_cluster/cassandra_data_2/
-cassandra_cluster/cassandra_data_seed/
+kafka/zk-single-kafka-multiple
+cassandra_cluster/cassandra_data_1
+cassandra_cluster/cassandra_data_2
+cassandra_cluster/cassandra_data_seed
 .idea
