@@ -6,7 +6,6 @@ const rootReducer = combineReducers({
     reducer: reducer
 });
 
-
 const store = createStore(rootReducer, applyMiddleware(Thunk));
 
 export default store;
