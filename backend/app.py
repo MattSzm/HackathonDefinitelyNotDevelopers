@@ -6,7 +6,7 @@ from flask_restful import Api
 import redis
 import logging
 from flask_cors import CORS
-from ai.model_wrapper import ModelWarper
+from ai.model_wrapper import ModelWrapper
 from prediction.extract_links import ExtractLinks
 
 app = Flask(__name__)
@@ -18,11 +18,11 @@ db = CQLAlchemy(app)
 api = Api(app)
 redis_client = redis.Redis(host="localhost", port="6379", db=0)
 CORS(app)
-ai_connector = ModelWarper()
+ai_connector = ModelWrapper()
 links_extractor = ExtractLinks()
 
 
-#logging to file
+#todo logging to file
 # logging.basicConfig(filename='test.log')
 
 
