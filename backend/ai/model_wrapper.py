@@ -8,7 +8,7 @@ class ModelWrapper:
     def __init__(self):
         self.text_rank = TextRank()
         self.min_length = INPUT_MIN_LENGTH
-        self.dp_model = SummarizationModel("/home/mateusz/BITEHack/backend/models/Hackaton-20210117T034637Z-001/Hackaton")
+        self.dl_model = SummarizationModel("/home/mateusz/BITEHack/backend/models/Hackaton-20210117T034637Z-001/Hackaton")
     
     def summarize(self, text:str):
         sentences = self.tokenize(text)
@@ -16,7 +16,7 @@ class ModelWrapper:
             return self.text_rank.summarize(
                 self.pre_processing_remove_newlines(
                     self.pre_processing_remove_links(text)))
-        return self.dp_model.predict(text)
+        return self.dl_model.predict(text)
 
     def pre_processing_remove_links(self, text):
         return re.sub(r"http\S+", "", text)
@@ -30,4 +30,4 @@ class ModelWrapper:
         return sentences
 
     def learn_more(self, content, result):
-        self.dp_model.learn_more(content, result)
+        self.dl_model.learn_more(content, result)
