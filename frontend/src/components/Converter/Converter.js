@@ -25,7 +25,7 @@ import StepConnector from '@material-ui/core/StepConnector';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import './Converter.css';
- 
+import LinkList from '../LinkList/LinkList';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -224,6 +224,7 @@ const Converter = (props) => {
         let reader = new FileReader();
         let img = event.target.files[0];
         setFilename(img.name);
+        handleScdToThd();
         console.log('Plik: ' + img.name);
         reader.onloadend = () => {
             setOpen(true);
@@ -248,8 +249,8 @@ const Converter = (props) => {
               placeholder={"Enter your text here..."}
               value={text}
               onChange={(event) => onInputChandler(event)}>
-            </textarea>
-            <div className="card text-right">
+            </textarea><br/>
+            <div className="card text-center">
                 <div className="card-body">
                     <h5 className="card-title">Submit and proceed {type}</h5>
                     <p className="card-text"></p>
@@ -266,7 +267,7 @@ const Converter = (props) => {
         </div>
     }else if (type ==='file'){
         userInput = (
-            <div className="card text-right">
+            <div className="card text-center">
                 <div className="card-body">
                     <h5 className="card-title">Load file:</h5>
                     <div className={classes.root}>
@@ -293,7 +294,7 @@ const Converter = (props) => {
 
     const left = (
         <div>
-            <div className="card text-left">
+            <div className="card text-center">
                 <div className="card-body">
                     <h5 className="card-title">Choose input type:</h5>
                     <p className="card-text"></p>
@@ -328,7 +329,7 @@ const Converter = (props) => {
             id="ex2" 
             rows={10} ></textarea>
             <br/>
-            <div className="card text-right">
+            <div className="card text-center">
                 <div className="card-body">
                     <h5 className="card-title">Rate and save results (they will be stored in your history)</h5>
                     <p className="card-text"></p>
@@ -348,6 +349,13 @@ const Converter = (props) => {
                         endIcon={<DeleteIcon/>}>
                         Delete fesult 
                     </Button>
+                </div>
+            </div><br/>
+            <div className="card text-center">
+                <div className="card-body">
+                    <h5 className="card-title">Rate and save results (they will be stored in your history)</h5>
+                    <p className="card-text"></p>
+                    <LinkList/>
                 </div>
             </div>
         </div>

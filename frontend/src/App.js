@@ -41,7 +41,7 @@ export default function App() {
     <div className="App">
       <Layout>
       </Layout>
-      <div className={classes.content}>
+      <div className={classes.content + " Content"}>
         <Switch>
               <Route exact path="/" component={Converter} />
               <Route exact path="/history" component={History} />
