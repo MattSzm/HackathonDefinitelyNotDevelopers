@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Converter from './components/Converter/Converter';
 import History from './components/History/History';
 import Stats from './components/Stats/Stats';
-import { loadUser, predictText, fetchPlotSummary } from './store/actions';
+import { loadUser, predictText, fetchPlotSummary, fetchUserHistory } from './store/actions';
 import Backdrop from './components/Loading/Backdrop/Backdrop';
 
 const drawerWidth = 64;
@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 export default function App() {
 
   useEffect(() => dispatch(loadUser()), []);
+  useEffect(() => dispatch(fetchUserHistory()), []);
 
   const dispatch = useDispatch();
   const loading = useSelector(state => state.reducer.isLoading)

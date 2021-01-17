@@ -70,6 +70,19 @@ export const trainAlgo = (id, text) => (dispatch, getState) => {
     })
 }
 
+export const fetchUserHistory = () => (dispatch, getState) => {
+    dispatch({ type: actionTypes.FETCH_HISTORY_START });
+
+    axios.get('/api/userhistory', tokenConfig(getState))
+    .then(res => {
+        console.log(res)
+        dispatch({
+            type: actionTypes.FETCH_HISTORY_SUCCESS,
+            payload: res.data
+        });
+    })
+}
+
 
 export const predictFile = (file) => (dispatch, getState) => {
     dispatch({ type: actionTypes.FILE_PREDICTION_START })

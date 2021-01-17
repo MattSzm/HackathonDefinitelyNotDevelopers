@@ -1,3 +1,4 @@
+import { useHistory } from 'react-router';
 import * as actionTypes from './actionTypes';
 
 const initialState = {
@@ -18,7 +19,9 @@ const initialState = {
         y1: [],
         y2: [],
         y3: []
-    }
+    },
+
+    userHistory: null
 }
 
 export default (state=initialState, action) => {
@@ -46,6 +49,7 @@ export default (state=initialState, action) => {
         case actionTypes.TEXT_PREDICTION_START:
         case actionTypes.USER_LOADING_START:
         case actionTypes.FILE_PREDICTION_START:
+        case actionTypes.FETCH_HISTORY_START:
             return {
                 ...state,
                 isLoading: true,
@@ -67,6 +71,11 @@ export default (state=initialState, action) => {
                 ...state,
                 // plotSummary: action.payload,
                 isLoading: true
+            }
+        case actionTypes.FETCH_HISTORY_START:
+            return {
+                ...state,
+                userHistory: action.payload
             }
         default:
             return state;
