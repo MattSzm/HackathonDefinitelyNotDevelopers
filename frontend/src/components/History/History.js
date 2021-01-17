@@ -82,7 +82,7 @@ const History = (props) => {
     })
 
     return (
-        <div className={classes.root} style={{padding:'24px'}}>
+        <div className={classes.root}>
             <div className="card text-white bg-warning mb-2" style={{backgroundColor: "#E87481 !important"}}>
                 <div className="card-header">So far, by making your texts shorter you have saved:</div>
                     <div className="card-body">

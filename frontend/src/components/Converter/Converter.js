@@ -399,7 +399,7 @@ const Converter = (props) => {
 
 
     return(
-        <div style={{padding:'24px'}}>  
+        <div>  
             {stepsPath}<br/>
             <Grid left={left} right ={right}/>
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
