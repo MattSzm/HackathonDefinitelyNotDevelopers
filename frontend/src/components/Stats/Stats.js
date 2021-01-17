@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Plotly from "plotly.js"
 import createPlotlyComponent from 'react-plotly.js/factory';
 import { fetchPlotSummary } from '../../store/actions';
+import './Stats.css';
 const Plot = createPlotlyComponent(Plotly);
 
 const Stats = (props) => {
