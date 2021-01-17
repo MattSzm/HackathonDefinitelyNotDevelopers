@@ -152,6 +152,7 @@ const Converter = (props) => {
     const [open, setOpen] = React.useState(false);
     const [filename, setFilename] = React.useState('');
     const [text, setText] = React.useState('');
+    const [isLoaded, setIsLoaded] = React.useState(false);
 
     const handleClose = (event, reason) => {
       if (reason === 'clickaway') {
@@ -172,14 +173,17 @@ const Converter = (props) => {
             dispatch(predictText(text))
         } else {
             dispatch(predictFile(file));}
+        setIsLoaded(true);
     }
 
     const handleFinish = (event) => {
         handleReset()
+        setIsLoaded(false)
     }
 
     const handleDelete = (event) => {
         handleReset()
+        setIsLoaded(false)
     }
 
     const [activeStep, setActiveStep] = React.useState(0);
@@ -195,6 +199,10 @@ const Converter = (props) => {
   
     const handleReset = () => {
       setActiveStep(0);
+      setFilename('');
+      setFile('');
+      setText('');
+      setType('');
     };
 
     const onInputChandler = (event) => {
@@ -292,7 +300,37 @@ const Converter = (props) => {
         );
     }
 
-    const left = (
+    let left = null;
+    const lilist = [
+      {id: 1, url: 'url1'},
+      {id: 2, url: 'url2'},
+      {id: 3, url: 'url3'},
+      {id: 4, url: 'url4'},
+    ]
+    if(isLoaded){
+      left = (
+        <div>
+          <div className="card text-center LinkList">
+                  <div className="card-body">
+                      <h5 className="card-title">Usefull links - they come from your recently shortened file - we don't want you to lose them!</h5>
+                      <p className="card-text"></p>
+                      <LinkList linkArray={lilist}/>
+                  </div>
+              </div><br/>
+              <div className="card text-center">
+                  <div className="card-body">
+                      <h5 className="card-title">Check how much time you've saved!</h5>
+                      <p className="card-text">
+                        Thanks to this app you didn't have to read the whole text - and becouse of that fact you've just saved X{props.saved} min.
+                      </p>
+                  </div>
+              </div>
+        </div>
+        
+      );
+    }
+    else {
+      left = (
         <div>
             <div className="card text-center">
                 <div className="card-body">
@@ -319,7 +357,8 @@ const Converter = (props) => {
 
             {userInput}
         </div>
-    );
+    )
+  }
 
     const right = (
         <div>
@@ -327,6 +366,7 @@ const Converter = (props) => {
             value={summary}
             className="form-control" 
             id="ex2" 
+            placeholder="Soon your text, but leaner and shorter, will be there!"
             rows={10} ></textarea>
             <br/>
             <div className="card text-center">
@@ -351,15 +391,9 @@ const Converter = (props) => {
                     </Button>
                 </div>
             </div><br/>
-            <div className="card text-center">
-                <div className="card-body">
-                    <h5 className="card-title">Rate and save results (they will be stored in your history)</h5>
-                    <p className="card-text"></p>
-                    <LinkList/>
-                </div>
-            </div>
         </div>
     );
+
 
     return(
         <div>  

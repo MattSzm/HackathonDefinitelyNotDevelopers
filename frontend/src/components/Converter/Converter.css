@@ -3,3 +3,13 @@
         display: none;
     }
 }
+
+.LinkList{
+    max-height: 255px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.LinkList::-webkit-scrollbar {
+    display: none;
+  }
