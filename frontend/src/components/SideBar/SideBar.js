@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
   },
   appBar: {
-    backgroundColor: 'red',
+    backgroundColor: '#E87481',
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -129,7 +129,7 @@ export default function SideDrawer() {
         </div>
         <Divider />
         <List>
-        <NavLink to={'/'}>
+        <NavLink style={{color: '#757575', textDecoration: 'none'}} to={'/'}>
           <ListItem button>
             <ListItemIcon>
               <HomeIcon className={classes.listIcon}/>
@@ -140,7 +140,7 @@ export default function SideDrawer() {
         </List>
         <Divider />
         <List>
-        <NavLink to={'/History'}>
+        <NavLink style={{color: '#757575', textDecoration: 'none'}} to={'/History'}>
           <ListItem button>
             <ListItemIcon>
               <HistoryIcon className={classes.listIcon}/>
@@ -151,7 +151,7 @@ export default function SideDrawer() {
         </List>
         <Divider />
         <List>
-          <NavLink to={'/Statistics'}>
+          <NavLink  style={{color: '#757575', textDecoration: 'none'}} to={'/Statistics'}>
           <ListItem button>
             <ListItemIcon>
               <TimelineIcon className={classes.listIcon}/>

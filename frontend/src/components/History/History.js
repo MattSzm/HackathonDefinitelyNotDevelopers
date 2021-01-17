@@ -83,7 +83,7 @@ const History = (props) => {
 
     return (
         <div className={classes.root}>
-            <div className="card text-white bg-warning mb-3">
+            <div className="card text-white bg-warning mb-2" style={{backgroundColor: "#E87481 !important"}}>
                 <div className="card-header">So far, by making your texts shorter you have saved:</div>
                     <div className="card-body">
                         <h5 className="card-title">{parseInt(savedTime/60) ? parseInt(savedTime/60) : 0} minutes</h5>
