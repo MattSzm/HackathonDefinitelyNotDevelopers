@@ -2,8 +2,9 @@ import React from 'react';
 import Backdrop from '@material-ui/core/Backdrop';
 import { makeStyles } from '@material-ui/core/styles';
 import Spinner from '../Spinner/Spinner';
+import { useSelector } from 'react-redux';
 
-///Aby użyć -> <Backdrop open={"true"}/>
+// /Aby użyć -> <Backdrop open={"true"}/>
 
 
 const useStyles = makeStyles((theme) => ({
@@ -15,14 +16,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SimpleBackdrop(props) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(props.open);
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const loading = useSelector(state => state.reducer.isLoading)
 
   return (
     <div>
-      <Backdrop className={classes.backdrop} open={open} onClick={handleClose}>
+      <Backdrop className={classes.backdrop} open={loading}>
         <Spinner/>
       </Backdrop>
     </div>

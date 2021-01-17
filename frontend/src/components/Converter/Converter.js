@@ -10,7 +10,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import {predictFile, predictText} from '../../store/actions';
+import {onUpdateSummary, predictFile, predictText, trainAlgo} from '../../store/actions';
 import { useDispatch, useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -145,7 +145,7 @@ const useStyles = makeStyles((theme) => ({
 const Converter = (props) => {
 
     const dispatch = useDispatch();
-    const summary = useSelector(state => state.reducer.summary);
+    const state = useSelector(state => state.reducer);
     const classes = useStyles();
     const [file, setFile] = React.useState();
     const [type, setType] = React.useState('');
@@ -170,13 +170,14 @@ const Converter = (props) => {
     const handleSubmitProcessing = (event) => {
         handleScdToThd();
         if (type === "text") {
-            dispatch(predictText(text))
+            dispatch(predictText(text));
         } else {
             dispatch(predictFile(file));}
         setIsLoaded(true);
     }
 
     const handleFinish = (event) => {
+        dispatch(trainAlgo(state.summaryID, state.summary));
         handleReset()
         setIsLoaded(false)
     }
@@ -207,7 +208,10 @@ const Converter = (props) => {
 
     const onInputChandler = (event) => {
       setText(event.target.value);
-      console.log(text)
+    }
+
+    const onInputChange = (event) => {
+      dispatch(onUpdateSummary(event.target.value));
     }
 
 
@@ -231,20 +235,10 @@ const Converter = (props) => {
     const imageSelectedHandler = event => {
         let reader = new FileReader();
         let img = event.target.files[0];
+        setFile(img)
         setFilename(img.name);
         handleScdToThd();
-        console.log('Plik: ' + img.name);
-        reader.onloadend = () => {
-            setOpen(true);
-            setFile({
-                ...file,
-                selectedImage: img,
-                imagePreviewUrl: reader.result
-            });
-        }
         reader.readAsDataURL(img);
-
-        console.log(img);
     }
 
     let userInput = null;
@@ -257,21 +251,7 @@ const Converter = (props) => {
               placeholder={"Enter your text here..."}
               value={text}
               onChange={(event) => onInputChandler(event)}>
-            </textarea><br/>
-            <div className="card text-center">
-                <div className="card-body">
-                    <h5 className="card-title">Submit and proceed {type}</h5>
-                    <p className="card-text"></p>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        className={classes.button}
-                        onClick={handleSubmitProcessing}
-                        endIcon={<SendIcon/>}>
-                        Let's make it shorter
-                    </Button>
-                </div>
-            </div><br/>
+            </textarea>
         </div>
     }else if (type ==='file'){
         userInput = (
@@ -355,7 +335,21 @@ const Converter = (props) => {
                 </div>
             </div><br/>
 
-            {userInput}
+            {userInput}<br/>
+            <div className="card text-right">
+                <div className="card-body">
+                    <h5 className="card-title">Submit and proceed {type}</h5>
+                    <p className="card-text"></p>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        className={classes.button}
+                        onClick={handleSubmitProcessing}
+                        endIcon={<SendIcon/>}>
+                        Let's make it shorter
+                    </Button>
+                </div>
+            </div><br/>
         </div>
     )
   }
@@ -363,11 +357,13 @@ const Converter = (props) => {
     const right = (
         <div>
         <textarea
-            value={summary}
+            value={state.summary}
             className="form-control" 
             id="ex2" 
             placeholder="Soon your text, but leaner and shorter, will be there!"
-            rows={10} ></textarea>
+            rows={10}
+            onChange={(event) => onInputChange(event)}>
+          </textarea>
             <br/>
             <div className="card text-center">
                 <div className="card-body">

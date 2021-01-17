@@ -7,6 +7,9 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Grid from '../Grid/Grid';
 import './History.css';
+import {useSelector, useDispatch} from 'react-redux'
+import {useEffect} from 'react';
+import {fetchUserHistory} from '../../store/actions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,8 +28,13 @@ const useStyles = makeStyles((theme) => ({
 
 
 const History = (props) => {
+
+    useEffect(() => dispatch(fetchUserHistory()), []);
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
+    const dispatch = useDispatch();
+    const userHistory = useSelector(state => state.reducer.userHistory)
+    const savedTime = useSelector(state => state.reducer.savedTime)
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
@@ -90,7 +98,7 @@ const History = (props) => {
             <div className="card text-white bg-warning mb-3">
                 <div className="card-header">So far, by making your texts shorter you have saved:</div>
                     <div className="card-body">
-                        <h5 className="card-title">{data.savedTime} minutes</h5>
+                        <h5 className="card-title">{parseInt(savedTime/60) ? parseInt(savedTime/60) : 0} minutes</h5>
                     </div>
             </div>
             {toDisplay}
