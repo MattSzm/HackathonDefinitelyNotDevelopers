@@ -84,6 +84,13 @@ export default (state=initialState, action) => {
                 ...state,
                 summary: action.payload
             }
+
+        case actionTypes.TRAIN_ALGO_SUCCESS:
+            return {
+                ...state,
+                summary: ''
+            }
+            
         default:
             return state;
     }

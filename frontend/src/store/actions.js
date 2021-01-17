@@ -1,6 +1,5 @@
 import * as actionTypes from './actionTypes';
 import axios from 'axios';
-import { red } from '@material-ui/core/colors';
 
 export const toggleDrawer = () => ({ type: actionTypes.TOGGLE_DRAWER });
 
