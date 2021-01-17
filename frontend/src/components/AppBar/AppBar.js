@@ -40,10 +40,6 @@ export default function PrimarySearchAppBar(props) {
 
   const isMenuOpen = Boolean(anchorEl);
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
@@ -80,7 +76,7 @@ export default function PrimarySearchAppBar(props) {
           </IconButton>
           <img src={logo} alt="logo" className={classes.logo}></img>
           <Typography className={classes.title} variant="h6" noWrap>
-            AppName
+            Cut It
           </Typography>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
@@ -89,7 +85,6 @@ export default function PrimarySearchAppBar(props) {
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
               color="inherit"
             >
               <AccountCircle />
