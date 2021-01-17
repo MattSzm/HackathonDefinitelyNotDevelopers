@@ -234,8 +234,7 @@ class PlotsSummary(Resource):
                 res['y1'] = res['y1'] + list(reversed(data['y1']))
                 res['y2'] = res['y2'] + list(reversed(data['y2']))
                 res['y3'] = res['y3'] + list(reversed(data['y3']))
-            # todo 60 seconds - change to 14400 (every 4hours update)
-            redis_client.set('summary', json.dumps(res), ex=60)
+            redis_client.set('summary', json.dumps(res), ex=14400)
         else:
             res = json.loads(cache)
         return res, 200
@@ -256,6 +255,8 @@ class TrainAlgorithm(Resource):
         args = train_algorithm.parse_args()
         if args.get('text') is None or args.get('id') is None:
             abort(400, message='Bad data')
+        if args.get('text') == '':
+            abort(409, message='No changes')
 
         found_prediction = Prediction.objects.filter(user=token_parsed,
                                                      id=args['id']).first()
