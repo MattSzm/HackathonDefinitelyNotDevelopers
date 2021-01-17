@@ -34,7 +34,6 @@ const useStyles = makeStyles((theme) => ({
 export default function App() {
 
   useEffect(() => dispatch(loadUser()), []);
-  useEffect(() => dispatch(fetchUserHistory()), []);
 
   const dispatch = useDispatch();
   const loading = useSelector(state => state.reducer.isLoading)

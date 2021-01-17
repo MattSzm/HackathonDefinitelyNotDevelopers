@@ -8,9 +8,7 @@ const initialState = {
     isLoading: false,
     isLoaded: false,
     summary: "",
-
-    history: null,
-
+    summaryID: "",
     selectedImage: null,
     imagePreviewUrl: null,
 
@@ -20,8 +18,7 @@ const initialState = {
         y2: [],
         y3: []
     },
-
-    userHistory: null
+    userHistory: []
 }
 
 export default (state=initialState, action) => {
@@ -44,6 +41,7 @@ export default (state=initialState, action) => {
             return {
                 ...state,
                 summary: action.payload.prediction,
+                summaryID: action.payload.id,
                 isLoading: false
             }
         case actionTypes.TEXT_PREDICTION_START:
@@ -55,9 +53,11 @@ export default (state=initialState, action) => {
                 isLoading: true,
             }
         case actionTypes.FILE_PREDICTION_SUCCESS:
+            console.log(action.payload)
             return {
                 ...state,
-                summary: action.payload.summary,
+                summary: action.payload.prediction,
+                summaryID: action.payload.id,
                 isLoading: false
             }
         case actionTypes.FETCH_SUMMARY_SUCCESS:
@@ -72,10 +72,17 @@ export default (state=initialState, action) => {
                 // plotSummary: action.payload,
                 isLoading: true
             }
-        case actionTypes.FETCH_HISTORY_START:
+        case actionTypes.FETCH_HISTORY_SUCCESS:
             return {
                 ...state,
-                userHistory: action.payload
+                userHistory: action.payload.data,
+                savedTime: action.payload.saved_time,
+                isLoading: false
+            }
+        case actionTypes.UPDATE_SUMMARY:
+            return {
+                ...state,
+                summary: action.payload
             }
         default:
             return state;
