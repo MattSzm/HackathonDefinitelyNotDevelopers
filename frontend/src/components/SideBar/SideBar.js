@@ -18,6 +18,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import { toggleDrawer } from '../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import './SideBar.css';
 
 const drawerWidth = 240;
 
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
   },
   appBar: {
-    backgroundColor: '#E87481',
+    backgroundColor: '#14171A',
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -150,8 +151,8 @@ export default function SideDrawer() {
           </NavLink>
         </List>
         <Divider />
-        <List>
-          <NavLink  style={{color: '#757575', textDecoration: 'none'}} to={'/Statistics'}>
+        <List className="DesktopOnly">
+          <NavLink style={{color: '#757575', textDecoration: 'none'}} to={'/Statistics'}>
           <ListItem button>
             <ListItemIcon>
               <TimelineIcon className={classes.listIcon}/>

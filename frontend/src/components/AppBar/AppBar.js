@@ -1,5 +1,5 @@
 import React from 'react';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -8,7 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import logo from '../assets/logobook.png';
+import logo from '../assets/logobookborder.png';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -39,10 +39,6 @@ export default function PrimarySearchAppBar(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -80,7 +76,7 @@ export default function PrimarySearchAppBar(props) {
           </IconButton>
           <img src={logo} alt="logo" className={classes.logo}></img>
           <Typography className={classes.title} variant="h6" noWrap>
-            AppName
+            Cut It
           </Typography>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
@@ -89,7 +85,6 @@ export default function PrimarySearchAppBar(props) {
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
               color="inherit"
             >
               <AccountCircle />

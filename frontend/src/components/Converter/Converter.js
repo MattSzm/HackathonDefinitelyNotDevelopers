@@ -217,7 +217,7 @@ const Converter = (props) => {
 
 
     const stepsPath = (
-        <div className="card text-left DesktopOnly">
+        <div className="card text-center DesktopOnly">
                 <div className="card-body">
                     <p className="card-text"></p>
                     <div className={classes.root}>
@@ -282,27 +282,33 @@ const Converter = (props) => {
     }
 
     let left = null;
-    const lilist = [
-      {id: 1, url: 'url1'},
-      {id: 2, url: 'url2'},
-      {id: 3, url: 'url3'},
-      {id: 4, url: 'url4'},
-    ]
-    if(isLoaded){
-      left = (
-        <div>
-          <div className="card text-center LinkList">
+    let linkList = null;
+    if(state.links.length > 0 ){
+        linkList = (
+          <div>
+            <div className="card text-center LinkList">
                   <div className="card-body">
                       <h5 className="card-title">Usefull links - they come from your recently shortened file - we don't want you to lose them!</h5>
                       <p className="card-text"></p>
-                      <LinkList linkArray={lilist}/>
+                      <LinkList linkArray={state.links}/>
                   </div>
-              </div><br/>
+              </div>
+              <br/>
+          </div>
+          
+        )
+    }
+    
+    if(isLoaded){
+      console.log(state);
+      left = (
+        <div>
+          {linkList}
               <div className="card text-center">
                   <div className="card-body">
                       <h5 className="card-title">Check how much time you've saved!</h5>
                       <p className="card-text">
-                        Thanks to this app you didn't have to read the whole text - and becouse of that fact you've just saved X{props.saved} min.
+                        Thanks to this app you didn't have to read the whole text - and becouse of that fact you've just saved {Math.round(state.time)} seconds.
                       </p>
                   </div>
               </div>
@@ -337,7 +343,7 @@ const Converter = (props) => {
             </div><br/>
 
             {userInput}<br/>
-            <div className="card text-right">
+            <div className="card text-center">
                 <div className="card-body">
                     <h5 className="card-title">Submit and proceed {type}</h5>
                     <p className="card-text"></p>

@@ -8,13 +8,12 @@ import './Stats.css';
 const Plot = createPlotlyComponent(Plotly);
 
 const Stats = (props) => {
-
     useEffect(() => dispatch(fetchPlotSummary()), []);
     const plotData = useSelector(state => state.reducer.plotSummary)
     const dispatch = useDispatch();
 
     return (
-        <div style={{ height: 600, backgroundColor: '#212121'}}>
+        <div className="Plot" style={{backgroundColor: "#212121"}}>
             <Plot
                 data={[{
                     type: 'bar',
@@ -89,7 +88,7 @@ const Stats = (props) => {
                 }}
                 style={{
                     width: '100%',
-                    height: '100%'
+                    height: 600
                 }}
             />
         </div>

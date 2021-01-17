@@ -9,6 +9,8 @@ const initialState = {
     isLoaded: false,
     summary: "",
     summaryID: "",
+    time: '',
+    links: [],
     selectedImage: null,
     imagePreviewUrl: null,
 
@@ -42,6 +44,8 @@ export default (state=initialState, action) => {
                 ...state,
                 summary: action.payload.prediction,
                 summaryID: action.payload.id,
+                time: action.payload.saved_time_seconds,
+                links: action.payload.links,
                 isLoading: false
             }
         case actionTypes.TEXT_PREDICTION_START:
@@ -58,6 +62,8 @@ export default (state=initialState, action) => {
                 ...state,
                 summary: action.payload.prediction,
                 summaryID: action.payload.id,
+                time: action.payload.saved_time_seconds,
+                links: action.payload.links,
                 isLoading: false
             }
         case actionTypes.FETCH_SUMMARY_SUCCESS:

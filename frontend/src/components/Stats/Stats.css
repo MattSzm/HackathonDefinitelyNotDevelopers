@@ -1,3 +1,6 @@
-body {
+.Plot {
+    height: 100vh;
+    margin:0;
+    padding:unset;
     background-color: #212121;
 }
