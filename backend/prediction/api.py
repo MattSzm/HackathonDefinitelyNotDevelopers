@@ -65,7 +65,7 @@ class PredictText(Resource):
 
         text_to_predict = args['text']
         words_count_before = len(text_to_predict.split(' '))
-        if words_count_before < 20:
+        if words_count_before < 15:
             abort(409)
 
         predicted = ai_connector.summarize(text_to_predict)
@@ -119,7 +119,7 @@ class PredictFromFile(Resource):
             converted_text_to_predict = text.decode('utf-8')
 
             words_count_before = len(converted_text_to_predict.split(' '))
-            if words_count_before < 20:
+            if words_count_before < 1:
                 abort(409)
 
             predicted = ai_connector.summarize(converted_text_to_predict)
@@ -177,11 +177,10 @@ class UserHistory(Resource):
 
 class PlotsSummary(Resource):
     def get(self):
-        cache = redis_client.get('summary')
+        cache = redis_client.get('summary1')
         if not cache:
             all_predictions = Prediction.objects.all()
             filtered_predictions = [pred for pred in all_predictions if pred.created_time]
-            filtered_predictions.sort(key=lambda x: x.created_time)
 
             #x - date
             #y1 - len before
@@ -234,7 +233,7 @@ class PlotsSummary(Resource):
                 res['y1'] = res['y1'] + list(reversed(data['y1']))
                 res['y2'] = res['y2'] + list(reversed(data['y2']))
                 res['y3'] = res['y3'] + list(reversed(data['y3']))
-            redis_client.set('summary', json.dumps(res), ex=14400)
+            redis_client.set('summary1', json.dumps(res), ex=60)
         else:
             res = json.loads(cache)
         return res, 200
