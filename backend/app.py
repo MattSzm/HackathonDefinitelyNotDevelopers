@@ -9,6 +9,7 @@ from flask_cors import CORS
 from ai.model_wrapper import ModelWrapper
 from prediction.extract_links import ExtractLinks
 
+
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 if os.getenv('CQLENG_ALLOW_SCHEMA_MANAGEMENT') is None:
