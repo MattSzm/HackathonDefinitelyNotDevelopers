@@ -5,6 +5,8 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Grid from '../Grid/Grid';
+import './History.css';
 import {useSelector, useDispatch} from 'react-redux'
 import {useEffect} from 'react';
 import {fetchUserHistory} from '../../store/actions';
@@ -15,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
-    flexBasis: '33.33%',
+    flexBasis: '100%',
     flexShrink: 0,
   },
   secondaryHeading: {
@@ -38,23 +40,45 @@ const History = (props) => {
         setExpanded(isExpanded ? panel : false);
     };
 
-    const dataDisplayed = userHistory.map( el => {
+    const toDisplay = userHistory.map( el => {
+        let left = (
+            <div className="card text-center Scrollable">
+                  <div className="card-body">
+                      <h5 className="card-title">Shorter version</h5>
+                      <p><b>Total characters: {el.prediction.length}</b></p>
+                      <p className="card-text">
+                          {el.prediction}
+                      </p>
+                  </div>
+              </div>
+        );
+        let right = (
+            <div className="card text-center Scrollable">
+                  <div className="card-body">
+                      <h5 className="card-title">Full text</h5>
+                      <p><b>Total characters: {el.content.length}</b></p>
+                      <p className="card-text">
+                          {el.content}
+                      </p>
+                  </div>
+              </div>
+        );
         return (
             <Accordion expanded={expanded === el.id} onChange={handleChange(el.id)}>
-            <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls={el.id + "bh-content"}
-            id={el.id+"bh-header"}
-            >
-            <Typography className={classes.heading}>{el.prediction}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-            <Typography>
-                {el.content}
-            </Typography>
-            </AccordionDetails>
-        </Accordion>
-        )
+                <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls={el.id + "bh-content"}
+                id={el.id+"bh-header"}
+                >
+                <Typography className={classes.heading}>{el.prediction.slice(0, 100) + "..."}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                <Typography>
+                    <Grid left={left} right={right}/>
+                </Typography>
+                </AccordionDetails>
+            </Accordion>
+        );
     })
 
     return (
@@ -65,7 +89,7 @@ const History = (props) => {
                         <h5 className="card-title">{parseInt(savedTime/60) ? parseInt(savedTime/60) : 0} minutes</h5>
                     </div>
             </div>
-            {dataDisplayed}
+            {toDisplay}
         </div>
     );
 }
