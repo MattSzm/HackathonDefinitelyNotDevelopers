@@ -19,19 +19,19 @@ const Stats = (props) => {
                     type: 'bar',
                     x: plotData.x,
                     y: plotData.y1,
-                    name: 'open',
+                    name: 'Input words',
                 },
                 {
                     type: 'bar',
                     x: plotData.x,
                     y: plotData.y2,
-                    name: 'high'
+                    name: 'Output words'
                 },
                 {
                     type: 'bar',
                     x: plotData.x,
                     y: plotData.y3,
-                    name: 'low'
+                    name: 'Saved time'
                 },
                 ]}
                 selectorOptions={{

@@ -184,6 +184,7 @@ const Converter = (props) => {
 
     const handleDelete = (event) => {
         handleReset()
+        dispatch({type: "TRAIN_ALGO_SUCCESS"})
         setIsLoaded(false)
     }
 
