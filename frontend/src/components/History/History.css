@@ -1,0 +1,9 @@
+.Scrollable{
+    max-height: 335px;
+    padding: 15px;
+    overflow-y: scroll;
+}
+
+.Scrollable::-webkit-scrollbar {
+    display: none;
+  }
