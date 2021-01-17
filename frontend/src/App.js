@@ -1,6 +1,6 @@
 import './App.css';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Layout from './components/Layout/Layout';
 import { Switch, Route } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,6 +8,7 @@ import Converter from './components/Converter/Converter';
 import History from './components/History/History';
 import Stats from './components/Stats/Stats';
 import { loadUser, predictText, fetchPlotSummary } from './store/actions';
+import Backdrop from './components/Loading/Backdrop/Backdrop';
 
 const drawerWidth = 64;
 
@@ -35,12 +36,14 @@ export default function App() {
   useEffect(() => dispatch(loadUser()), []);
 
   const dispatch = useDispatch();
+  const loading = useSelector(state => state.reducer.isLoading)
   const classes = useStyles();
 
   return (
     <div className="App">
       <Layout>
       </Layout>
+      <Backdrop open={loading}/>
       <div className={classes.content}>
         <Switch>
               <Route exact path="/" component={Converter} />
@@ -51,32 +54,3 @@ export default function App() {
     </div>
     );
   }
-
-// export default function App() {
-//   useEffect(() => dispatch(loadUser()));
-
-//   const dispatch = useDispatch();
-//   const classes = useStyles();
-
-//   return (
-//     <div className="App">
-//       <Layout>
-//       </Layout>
-//       <div className={classes.content}>   
-//         <Switch>
-//               <Route exact path="/" render={() => (
-//                 <Redirect to="/temp" />
-//               )} />
-//               <Route exact path="/home" component={Grid}></Route>
-//         </Switch>
-//       </div>
-//     </div>
-//   );
-// }
-
-
-// const mapStateToProps = state => ({
-//   isAuth: state.reducer.isAuthenticated
-// });
-
-// export default connect(mapStateToProps)(App);

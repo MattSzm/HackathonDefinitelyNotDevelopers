@@ -154,7 +154,7 @@ const Converter = (props) => {
     const handleSubmitProcessing = (event) => {
         handleScdToThd();
         if (type === "text") {
-            dispatch(predictText(text))
+            dispatch(predictText(text));
         } else {
             dispatch(predictFile(file));}
     }
@@ -184,7 +184,6 @@ const Converter = (props) => {
 
     const onInputChandler = (event) => {
       setText(event.target.value);
-      console.log(text)
     }
 
 
@@ -306,7 +305,8 @@ const Converter = (props) => {
             value={summary}
             className="form-control" 
             id="ex2" 
-            rows={10} ></textarea>
+            rows={10}
+            onChange={(event) => onInputChandler(event)}></textarea>
             <br/>
             <div className="card text-right">
                 <div className="card-body">
