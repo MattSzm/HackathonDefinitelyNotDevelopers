@@ -18,6 +18,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import { toggleDrawer } from '../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import './SideBar.css';
 
 const drawerWidth = 240;
 
@@ -150,7 +151,7 @@ export default function SideDrawer() {
           </NavLink>
         </List>
         <Divider />
-        <List>
+        <List className="DesktopOnly">
           <NavLink to={'/Statistics'}>
           <ListItem button>
             <ListItemIcon>
