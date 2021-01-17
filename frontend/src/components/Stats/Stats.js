@@ -13,7 +13,7 @@ const Stats = (props) => {
     const dispatch = useDispatch();
 
     return (
-        <div className="Plot" style={{padding:"unset", backgroundColor: "#212121", margin: "0"}}>
+        <div className="Plot" style={{padding:"unset", backgroundColor: "#212121", margin: "unset"}}>
             <Plot
                 data={[{
                     type: 'bar',
