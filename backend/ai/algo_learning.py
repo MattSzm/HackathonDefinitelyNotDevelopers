@@ -3,7 +3,7 @@ import json
 from ai.abstractive_summarization import SummarizationModel
 
 
-ai = SummarizationModel("/home/mateusz/BITEHack/backend/models/Hackaton-20210117T034637Z-001/Hackaton")
+ai = SummarizationModel("/home/mateusz/BITEHack/backend/models/Hackaton-20210117T094303Z-002/Hackaton")
 consumer = KafkaConsumer("hackaton", group_id='first_group',
                          key_deserializer=lambda v: v.decode('ascii'),
                          value_deserializer=lambda x: json.loads(x),

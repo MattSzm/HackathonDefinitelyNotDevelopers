@@ -8,7 +8,7 @@ class ModelWrapper:
     def __init__(self):
         self.text_rank = TextRank()
         self.min_length = INPUT_MIN_LENGTH
-        self.dl_model = SummarizationModel("/home/mateusz/BITEHack/backend/models/Hackaton-20210117T034637Z-001/Hackaton")
+        self.dl_model = SummarizationModel("/home/mateusz/BITEHack/backend/models/Hackaton-20210117T094303Z-002/Hackaton")
     
     def summarize(self, text:str):
         sentences = self.tokenize(text)
