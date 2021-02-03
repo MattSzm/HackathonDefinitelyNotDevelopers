@@ -8,7 +8,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './store/store';
 
-axios.defaults.baseURL = 'http://e5caa3de8e79.ngrok.io'
+axios.defaults.baseURL = 'http://ec235182bee7.ngrok.io'
 
 ReactDOM.render(
   <React.StrictMode>

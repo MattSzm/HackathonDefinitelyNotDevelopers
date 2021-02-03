@@ -36,6 +36,7 @@ export default (state=initialState, action) => {
             console.log(action.payload.token);
             return {
                 ...state,
+                token: action.payload.token,
                 isAuthenticated: true,
                 isLoading: false
             }
@@ -94,6 +95,11 @@ export default (state=initialState, action) => {
             return {
                 ...state,
                 summary: ''
+            }
+        case actionTypes.STOP_LOADING:
+            return {
+                ...state,
+                isLoading: false
             }
         default:
             return state;

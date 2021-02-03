@@ -120,4 +120,4 @@ class SummarizationModel:
         return self.decode_sequence(x_tr[0].reshape(1, self.max_text_len))
 
     def learn_more(self, content, result):
-        print(content, result, sep='\n')
+        print(content, result, sep='\n', end='\n\n')

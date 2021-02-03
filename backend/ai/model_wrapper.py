@@ -7,12 +7,13 @@ from ai.abstractive_summarization import SummarizationModel
 class ModelWrapper:
     def __init__(self):
         self.text_rank = TextRank()
-        self.min_length = INPUT_MIN_LENGTH
+        self.min_length = INPUT_MIN_LENGTH-5
         self.dl_model = SummarizationModel("/home/mateusz/BITEHack/backend/models/Hackaton-20210117T094303Z-002/Hackaton")
     
     def summarize(self, text:str):
         sentences = self.tokenize(text)
         if len(sentences) > self.min_length:
+            print('long one')
             return self.text_rank.summarize(
                 self.pre_processing_remove_newlines(
                     self.pre_processing_remove_links(text)))

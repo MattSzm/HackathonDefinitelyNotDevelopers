@@ -43,7 +43,7 @@ export const loadUser = () => (dispatch, getState) => {
             payload: res.data
         });
     }).catch(err => {
-        
+        dispatch({type: actionTypes.STOP_LOADING})
     })
 };
 
@@ -56,7 +56,7 @@ export const predictText = (text) => (dispatch, getState) => {
             dispatch({ type: actionTypes.TEXT_PREDICTION_SUCCESS, payload: res.data })
             console.log(res)
         }).catch(err => {
-        
+            dispatch({type: actionTypes.STOP_LOADING})
         })
 };
 
@@ -72,6 +72,7 @@ export const trainAlgo = (id, text) => (dispatch, getState) => {
         console.log(res)
     }).catch(err => {
         console.log(err.message)
+        dispatch({type: actionTypes.STOP_LOADING})
     })
 }
 
@@ -86,7 +87,7 @@ export const fetchUserHistory = () => (dispatch, getState) => {
             payload: res.data
         });
     }).catch(err => {
-        
+        dispatch({type: actionTypes.STOP_LOADING})
     })
 }
 
@@ -100,13 +101,13 @@ export const predictFile = (file) => (dispatch, getState) => {
         console.log(res.data)
         dispatch({ type: actionTypes.FILE_PREDICTION_SUCCESS, payload: res.data })
     }).catch(err => {
-        
+        dispatch({type: actionTypes.STOP_LOADING})
     })
 }
 
 export const fetchPlotSummary = () => (dispatch, getState) => {
     dispatch({ type: actionTypes.FETCH_SUMMARY_START });
-
+    console.log("fdfsfsd");
     axios.get('/api/plotsummary', tokenConfig(getState))
     .then(res => {
         console.log(res)
@@ -115,7 +116,7 @@ export const fetchPlotSummary = () => (dispatch, getState) => {
             payload: res.data
         });
     }).catch(err => {
-        
+        dispatch({type: actionTypes.STOP_LOADING})
     })
 }
 

@@ -390,7 +390,7 @@ const Converter = (props) => {
                         onClick={handleDelete}
                         className={classes.button}
                         endIcon={<DeleteIcon/>}>
-                        Delete fesult 
+                        Delete result
                     </Button>
                 </div>
             </div><br/>
